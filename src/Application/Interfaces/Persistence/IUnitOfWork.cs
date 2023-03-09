@@ -4,5 +4,5 @@ public interface IUnitOfWork
 {
     public ICityRepository Cities { get; }
     
-    public Task CommitAsync();
+    public Task<int> CommitAsync();
 }

@@ -1,8 +1,7 @@
-﻿namespace Application.Cities.Queries.GetAll;
+﻿namespace Presentation.Cities.Requests;
 
-public record GetAllCitiesResponse
+public record CreateCityRequest
 {
-    public Guid Id { get; set; }
     public string Name { get; set; }
     public string Country { get; set; }
     public string SubCountry { get; set; }

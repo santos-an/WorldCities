@@ -32,24 +32,41 @@ public class CityRepository : ICityRepository
         return Maybe.From<City>(city);
     }
 
-    public Task<Maybe<City>> GetByName(string name)
+    public async Task<Maybe<IEnumerable<City>>> GetByName(string name)
     {
-        throw new NotImplementedException();
+        IQueryable<City> cities = _context
+            .Cities
+            .Where(c => c.Name.ToLower().Contains(name.ToLower()));
+
+        var result = await cities.ToListAsync();
+        return Maybe.From<IEnumerable<City>>(result);
     }
 
-    public Task<Maybe<City>> GetByCountry(string country)
+    public async Task<Maybe<IEnumerable<City>>> GetByCountry(string country)
     {
-        throw new NotImplementedException();
+        IQueryable<City> cities = _context
+            .Cities
+            .Where(c => c.Country.ToLower().Contains(country.ToLower()));
+
+        var result = await cities.ToListAsync();
+        return Maybe.From<IEnumerable<City>>(result);
     }
 
-    public Task<Maybe<City>> GetBySubCountry(string subCountry)
+    public async Task<Maybe<IEnumerable<City>>> GetBySubCountry(string subCountry)
     {
-        throw new NotImplementedException();
+        IQueryable<City> cities = _context
+            .Cities
+            .Where(c => c.SubCountry.ToLower().Contains(subCountry.ToLower()));
+
+        var result = await cities.ToListAsync();
+        return Maybe.From<IEnumerable<City>>(result);
     }
 
-    public Task AddAsync(City course)
+    public async Task AddAsync(City city)
     {
-        throw new NotImplementedException();
+        await _context
+            .Cities
+            .AddAsync(city);
     }
 
     public Task Delete(City course)

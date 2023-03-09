@@ -1,18 +1,20 @@
-﻿using Application.Interfaces.Messaging;
+﻿using Application.Cities.Queries.GetById;
+using Application.Interfaces.Messaging;
 using Application.Interfaces.Persistence;
+using CSharpFunctionalExtensions;
 using Domain.Entities;
 
 namespace Application.Cities.Queries.GetAll;
 
-public record GetAllCitiesQuery : IQuery<List<GetAllCitiesResponse>>;
+public record GetAllCitiesQuery : IQuery<Result<List<GetCityResponse>>>;
 
-public class GetCoursesQueryHandler : IQueryHandler<GetAllCitiesQuery, List<GetAllCitiesResponse>>
+public class GetCoursesQueryHandler : IQueryHandler<GetAllCitiesQuery, Result<List<GetCityResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork;
-
+    
     public GetCoursesQueryHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
     
-    public async Task<List<GetAllCitiesResponse>> Handle(GetAllCitiesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<GetCityResponse>>> Handle(GetAllCitiesQuery request, CancellationToken cancellationToken)
     {
         var cities = await _unitOfWork.Cities.GetAll();
 
@@ -21,9 +23,9 @@ public class GetCoursesQueryHandler : IQueryHandler<GetAllCitiesQuery, List<GetA
             .ToList();
     }
     
-    GetAllCitiesResponse ToResponse(City c)
+    GetCityResponse ToResponse(City c)
     {
-        return new GetAllCitiesResponse
+        return new GetCityResponse
         {
             Id = c.Id, 
             Name = c.Name, 

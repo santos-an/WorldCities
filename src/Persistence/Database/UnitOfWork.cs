@@ -15,5 +15,8 @@ public class UnitOfWork : IUnitOfWork
 
     public ICityRepository Cities { get; }
 
-    public async Task CommitAsync() => await _context.SaveChangesAsync();
+    public async Task<int> CommitAsync()
+    {
+        return await _context.SaveChangesAsync();
+    }
 }
