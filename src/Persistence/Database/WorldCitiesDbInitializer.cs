@@ -1,5 +1,8 @@
 ﻿using Application;
+using Application.Interfaces.Infrastructure;
+using Application.Interfaces.Persistence;
 using Domain;
+using Domain.Entities;
 
 namespace Persistence.Database;
 

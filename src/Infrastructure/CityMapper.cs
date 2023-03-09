@@ -1,5 +1,6 @@
 ﻿using CsvHelper.Configuration;
 using Domain;
+using Domain.Entities;
 
 namespace Infrastructure;
 

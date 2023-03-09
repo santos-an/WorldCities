@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
+using Application.Interfaces.Persistence;
 using Domain;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Database;

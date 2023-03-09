@@ -4,12 +4,13 @@ using CSharpFunctionalExtensions;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Domain;
+using Domain.Entities;
 using Microsoft.Extensions.Options;
-using IReader = Application.IReader;
+using IReader = Application.Interfaces.Infrastructure.IReader;
 
 namespace Infrastructure;
 
-public class CsvReader : IReader
+public class CsvReader : Application.Interfaces.Infrastructure.IReader
 {
     private readonly Csv _csv;
 

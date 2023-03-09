@@ -1,8 +1,13 @@
-using Application;
+using Application.Interfaces.Infrastructure;
+using Application.Interfaces.Persistence;
 using Domain;
 using Infrastructure;
+using MediatR;
+using MediatR.Extensions.FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using Persistence.Cities;
 using Persistence.Database;
+using Presentation.Middlewares;
 
 namespace Presentation;
 
@@ -22,6 +27,8 @@ public static class Program
         ConfigureServices(builder.Services, builder.Configuration);
 
         var app = builder.Build();
+        
+        RunMigrations(app);
         Configure(app);
         
         app.Run();
@@ -35,7 +42,9 @@ public static class Program
 
         services.AddTransient<IReader, CsvReader>();
         services.AddTransient<IDbInitializer, WorldCitiesDbInitializer>();
-        
+        services.AddTransient<ICityRepository, CityRepository>();
+        services.AddTransient<IUnitOfWork, UnitOfWork>();
+
         var secret = configuration[JwtSecret];
         if (string.IsNullOrEmpty(secret))
             throw new Exception("Secret is null. Please check your app-settings.json");
@@ -51,11 +60,23 @@ public static class Program
             var connection = configuration.GetConnectionString("DefaultConnection");
             options.UseSqlServer(connection);
         });
+        
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        
+        services.AddMediatR(assemblies);
+        services.AddFluentValidation(assemblies);
+    }
+
+    private static void RunMigrations(WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<WorldCitiesDbContext>();
+
+        context.Database.Migrate();
     }
 
     private static void Configure(WebApplication app)
     {
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -65,15 +86,6 @@ public static class Program
         app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();
-        
-        RunMigrations(app);
-    }
-
-    private static void RunMigrations(WebApplication app)
-    {
-        using var scope = app.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<WorldCitiesDbContext>();
-
-        context.Database.Migrate();
+        app.UseMiddleware<ExceptionMiddleware>();
     }
 }
