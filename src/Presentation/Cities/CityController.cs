@@ -1,4 +1,6 @@
 ﻿using Application.Cities.Queries.GetAll;
+using Application.Cities.Queries.GetByGeoNameId;
+using Application.Cities.Queries.GetById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,20 +24,26 @@ public class CityController : ControllerBase
     }
     
     [HttpGet("[action]")]
-    public async Task<IActionResult> GetById()
+    public async Task<IActionResult> GetById(Guid id)
     {
-        var query = new GetAllCitiesQuery();
-        var response = await _mediator.Send(query);
+        var query = new GetCityByIdQuery { Id = id };
         
-        return Ok(response.Take(100));
+        var response = await _mediator.Send(query);
+        if (response.IsFailure)
+            return BadRequest(response.Error);
+        
+        return Ok(response.Value);
     }
     
     [HttpGet("[action]")]
-    public async Task<IActionResult> GetByGeonameId()
+    public async Task<IActionResult> GetByGeonameId(string geoNameId)
     {
-        var query = new GetAllCitiesQuery();
-        var response = await _mediator.Send(query);
+        var query = new GetCityByGeoNameId { GeonameId = geoNameId };
         
-        return Ok(response.Take(100));
+        var response = await _mediator.Send(query);
+        if (response.IsFailure)
+            return BadRequest(response.Error);
+        
+        return Ok(response.Value);
     }
 }
