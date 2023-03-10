@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Persistence.Cities;
 using Persistence.Database;
+using Persistence.Token;
 
 namespace Api;
 
@@ -56,6 +57,7 @@ public static class Program
         services.AddTransient<ICsvReader, CsvReader>();
         services.AddTransient<IDbInitializer, WorldCitiesDbInitializer>();
         services.AddTransient<ICityRepository, CityRepository>();
+        services.AddTransient<ITokenRepository, TokenRepository>();
         services.AddTransient<IUnitOfWork, UnitOfWork>();
 
         var secret = configuration[JwtSecret];
