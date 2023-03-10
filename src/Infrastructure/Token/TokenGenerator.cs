@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Application.Interfaces.Infrastructure;
 using CSharpFunctionalExtensions;
+using Domain;
 using Domain.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -12,10 +13,16 @@ namespace Infrastructure.Token;
 
 public class TokenGenerator : ITokenGenerator
 {
-    private readonly Jwt _jwt;
+    private readonly JwtOtions _jwt;
     private readonly JwtSecurityTokenHandler _handler;
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public TokenGenerator(IOptionsMonitor<Jwt> options, JwtSecurityTokenHandler handler)
+    public TokenGenerator(
+        IOptionsMonitor<JwtOtions> options,
+        JwtSecurityTokenHandler handler,
+        UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager)
     {
         _jwt = options.CurrentValue;
         _handler = handler;
@@ -32,7 +39,7 @@ public class TokenGenerator : ITokenGenerator
             Issuer = _jwt.Issuer,
             Audience = _jwt.Audience,
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(_jwt.TokenExpiration),   
+            Expires = DateTime.UtcNow.AddMinutes(_jwt.TokenExpiration),
             SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
         };
 
@@ -46,16 +53,16 @@ public class TokenGenerator : ITokenGenerator
             Created = DateTime.Now,
             ExpiryDate = DateTime.UtcNow.AddMonths(_jwt.RefreshTokenExpiration),
             UserId = user.Id,
-            Value = RandomString(35) + Guid.NewGuid()   // The actual refresh Token value
+            Value = RandomString(35) + Guid.NewGuid() // The actual refresh Token value
         };
-        
+
         return Result.Success();
     }
-    
+
     private async Task<List<Claim>> GetAllValidClaimsFor(IdentityUser user)
     {
         return new List<Claim>();
-        
+
         // var claims = new List<Claim>()
         // {
         //     new("id", user.Id),
@@ -93,7 +100,7 @@ public class TokenGenerator : ITokenGenerator
     {
         var random = new Random();
         var builder = new StringBuilder();
-        
+
         for (var i = 0; i < length; i++)
         {
             var randValue = random.Next(0, 26);
@@ -104,7 +111,7 @@ public class TokenGenerator : ITokenGenerator
 
         return builder.ToString();
     }
-    
+
     public SecurityToken SecurityToken { get; private set; }
     public string AccessToken { get; private set; }
     public RefreshToken RefreshToken { get; private set; }

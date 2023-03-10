@@ -1,3 +1,4 @@
+using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Text;
@@ -23,10 +24,10 @@ namespace Api;
 
 public static class Program
 {
-    private const string Jwt = nameof(Jwt);
-    private const string JwtSecret = $"{Jwt}:Secret";
-    private const string JwtIssuer = $"{Jwt}:Issuer";
-    private const string JwtAudience = $"{Jwt}:Audience";
+    private const string JwtOtions = nameof(JwtOtions);
+    private const string JwtSecret = $"{JwtOtions}:Secret";
+    private const string JwtIssuer = $"{JwtOtions}:Issuer";
+    private const string JwtAudience = $"{JwtOtions}:Audience";
     
     private const string Csv = nameof(Csv);
     private const string CsvFileName = $"{Csv}:FileName";
@@ -131,12 +132,8 @@ public static class Program
             });
         
         services.AddSingleton(validationParameters);
-        services.Configure<Jwt>(configuration.GetSection(Jwt));
+        services.Configure<JwtOtions>(configuration.GetSection(JwtOtions));
 
-        
-        
-        
-        
         var csvFileName = configuration[CsvFileName];
         if (string.IsNullOrEmpty(csvFileName))
             throw new Exception("CsvFileName is null. Please check your app-settings.json");
