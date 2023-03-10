@@ -31,14 +31,14 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Resul
         var existingUser = await _unitOfWork.Users.FindByEmailAsync(request.Email);
         if (existingUser.HasValue)
             return Result.Failure<UserRegistrationResponse>("Email already in use. There is a user for the given email. Use a different email");
-
+        
         var user = new IdentityUser { UserName = request.Username, Email = request.Email };
         
         // register user
         var registrationResult = await _unitOfWork.Users.CreateAsync(user, request.Password);
         if (registrationResult.IsFailure)
             return Result.Failure<UserRegistrationResponse>($"Not possible to register user: {registrationResult.Error}");
-
+        
         // add new role to user
         var addNewRoleResult = await _unitOfWork.Users.AddToRoleAsync(user, RoleType.Normal);
         if (addNewRoleResult.IsFailure)
@@ -48,10 +48,10 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Resul
         var newTokenResult = await _tokenGenerator.Generate(user);
         if (newTokenResult.IsFailure)
             return Result.Failure<UserRegistrationResponse>(newTokenResult.Error);
-
+        
         var accessToken = _tokenGenerator.AccessToken;
         var refreshToken = _tokenGenerator.RefreshToken;
-
+        
         await _unitOfWork.Tokens.AddRefreshTokenAsync(refreshToken);
         await _unitOfWork.CommitAsync();
         
