@@ -1,6 +1,4 @@
-using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using Api.Middlewares;
@@ -8,13 +6,13 @@ using Application.Behaviours;
 using Application.Interfaces.Infrastructure;
 using Application.Interfaces.Persistence;
 using Domain;
-using Infrastructure;
 using Infrastructure.Behaviours;
 using Infrastructure.Csv;
 using Infrastructure.Token;
 using MediatR;
 using MediatR.Extensions.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Persistence.Cities;
@@ -140,11 +138,20 @@ public static class Program
 
         services.Configure<Csv>(configuration.GetSection(Csv));
 
+        // services.AddDbContext<WorldCitiesDbContext>(options =>
+        // {
+        //     var connection = configuration.GetConnectionString("DefaultConnection");
+        //     options.UseSqlServer(connection);
+        // });
+        
         services.AddDbContext<WorldCitiesDbContext>(options =>
         {
-            var connection = configuration.GetConnectionString("DefaultConnection");
-            options.UseSqlServer(connection);
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         });
+        
+        services
+            .AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddEntityFrameworkStores<WorldCitiesDbContext>();
         
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidatorBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));

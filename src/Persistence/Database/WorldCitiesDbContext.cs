@@ -1,11 +1,12 @@
 ﻿using System.Reflection;
 using Application.Interfaces.Persistence;
 using Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Database;
 
-public class WorldCitiesDbContext : DbContext
+public class WorldCitiesDbContext : IdentityDbContext
 {
     private readonly IDbInitializer _initializer;
 
@@ -16,8 +17,9 @@ public class WorldCitiesDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        base.OnModelCreating(modelBuilder);
         
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         modelBuilder.Entity<City>().HasData(_initializer.GetCities());
     }
 
