@@ -11,12 +11,16 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Behaviours" />
+      <Folder Include="UseCases" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="11.4.0" />
       <PackageReference Include="MediatR" Version="11.1.0" />
       <PackageReference Include="MediatR.Contracts" Version="1.0.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.3" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0-preview.1.23110.8" />
+      <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.27.0" />
     </ItemGroup>
 
 </Project>

@@ -1,28 +1,26 @@
-﻿using Application;
-using Application.Interfaces.Infrastructure;
+﻿using Application.Interfaces.Infrastructure;
 using Application.Interfaces.Persistence;
-using Domain;
 using Domain.Entities;
+using Domain.Exceptions;
+using Infrastructure.Exceptions;
 
 namespace Persistence.Database;
 
 public class WorldCitiesDbInitializer : IDbInitializer
 {
-    private readonly IReader _reader;
+    private readonly ICsvReader _csvReader;
 
-    public WorldCitiesDbInitializer(IReader reader)
+    public WorldCitiesDbInitializer(ICsvReader csvReader)
     {
-        _reader = reader;
+        _csvReader = csvReader;
     }
 
     public IReadOnlyList<City> GetCities()
     {
-        var result = _reader.Read();
+        var result = _csvReader.Read();
         if (result.IsFailure)
-        {
-            
-        }
-        
+            throw new CsvReaderException("CSV reading error", result.Error);
+
         // the csv file does not set an id for the city
         foreach (var city in result.Value) 
             city.Id = Guid.NewGuid();

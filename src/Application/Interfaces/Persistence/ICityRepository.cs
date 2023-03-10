@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using Domain;
 using Domain.Entities;
 
 namespace Application.Interfaces.Persistence;

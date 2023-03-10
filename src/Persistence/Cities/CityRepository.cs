@@ -22,7 +22,7 @@ public class CityRepository : ICityRepository
 
         return Maybe.From<City>(city);
     }
-
+    
     public async Task<Maybe<City>> GetByGeonameId(string geonameId)
     {
         var city = await _context
