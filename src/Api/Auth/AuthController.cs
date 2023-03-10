@@ -1,10 +1,8 @@
 ﻿using Api.Auth.Requests;
-using Application.Interfaces.Infrastructure;
 using Application.UseCases.Users.Commands.Create;
 using Application.UseCases.Users.Commands.Login;
 using Application.UseCases.Users.Commands.UpdateToken;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Auth;

@@ -5,6 +5,10 @@ namespace Application.Interfaces.Persistence;
 
 public interface IDbInitializer
 {
-    public IReadOnlyList<City> GetCities();
-    public IReadOnlyList<IdentityRole> GetRoles();
+    void GenerateData();
+    
+    IReadOnlyList<City> Cities { get; }
+    IReadOnlyList<IdentityRole> Roles { get; }
+    IReadOnlyList<IdentityUser> Users { get; }
+    IReadOnlyList<IdentityUserRole<string>> UserRoles { get; }
 }

@@ -8,9 +8,9 @@ namespace Persistence.Cities;
 
 public class CityRepository : ICityRepository
 {
-    private readonly WorldCitiesDbContext _context;
+    private readonly ApplicationDbContext _context;
 
-    public CityRepository(WorldCitiesDbContext context) => _context = context;
+    public CityRepository(ApplicationDbContext context) => _context = context;
 
     public async Task<IEnumerable<City>> GetAll() => await _context.Cities.ToListAsync();
 

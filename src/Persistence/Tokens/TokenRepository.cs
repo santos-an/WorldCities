@@ -8,9 +8,9 @@ namespace Persistence.Tokens;
 
 public class TokenRepository : ITokenRepository
 {
-    private readonly WorldCitiesDbContext _context;
+    private readonly ApplicationDbContext _context;
 
-    public TokenRepository(WorldCitiesDbContext context) => _context = context;
+    public TokenRepository(ApplicationDbContext context) => _context = context;
 
     public async Task<Maybe<RefreshToken>> GetRefreshTokenBy(string refreshToken)
     {

@@ -24,13 +24,13 @@ namespace Api;
 
 public static class Program
 {
-    private const string JwtOtions = nameof(JwtOtions);
-    private const string JwtSecret = $"{JwtOtions}:Secret";
-    private const string JwtIssuer = $"{JwtOtions}:Issuer";
-    private const string JwtAudience = $"{JwtOtions}:Audience";
+    private const string JwtOptions = nameof(JwtOptions);
+    private const string JwtSecret = $"{JwtOptions}:Secret";
+    private const string JwtIssuer = $"{JwtOptions}:Issuer";
+    private const string JwtAudience = $"{JwtOptions}:Audience";
     
-    private const string Csv = nameof(Csv);
-    private const string CsvFileName = $"{Csv}:FileName";
+    private const string CsvOptions = nameof(CsvOptions);
+    private const string CsvFileName = $"{CsvOptions}:FileName";
 
     public static void Main(string[] args)
     {
@@ -54,9 +54,10 @@ public static class Program
         services.AddTransient<JwtSecurityTokenHandler>();
         services.AddTransient<ITokenGenerator, TokenGenerator>();
         services.AddTransient<ITokenValidator, TokenValidator>();
-        
+
+        services.AddSingleton<IDbInitializer, ApplicationDbInitializer>();
         services.AddTransient<ICsvReader, CsvReader>();
-        services.AddTransient<IDbInitializer, WorldCitiesDbInitializer>();
+        
         services.AddTransient<ICityRepository, CityRepository>();
         services.AddTransient<ITokenRepository, TokenRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
@@ -134,26 +135,26 @@ public static class Program
             });
         
         services.AddSingleton(validationParameters);
-        services.Configure<JwtOtions>(configuration.GetSection(JwtOtions));
+        services.Configure<JwtOtions>(configuration.GetSection(JwtOptions));
 
         var csvFileName = configuration[CsvFileName];
         if (string.IsNullOrEmpty(csvFileName))
             throw new Exception("CsvFileName is null. Please check your app-settings.json");
 
-        services.Configure<Csv>(configuration.GetSection(Csv));
-
-        services.AddDbContext<WorldCitiesDbContext>(options =>
+        services.Configure<CsvOtions>(configuration.GetSection(CsvOptions));
+        
+        services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         });
         
         services
             .AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddEntityFrameworkStores<WorldCitiesDbContext>();
+            .AddEntityFrameworkStores<ApplicationDbContext>();
         
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidatorBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RetryBehaviour<,>));
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidatorBehavior<,>));
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(RetryBehaviour<,>));
         
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         
@@ -164,9 +165,8 @@ public static class Program
     private static void RunMigrations(WebApplication app)
     {
         using var scope = app.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<WorldCitiesDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        context.Database.EnsureCreated();
         context.Database.Migrate();
     }
 

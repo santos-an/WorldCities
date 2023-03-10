@@ -4,9 +4,9 @@ namespace Persistence.Database;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly WorldCitiesDbContext _context;
+    private readonly ApplicationDbContext _context;
 
-    public UnitOfWork(WorldCitiesDbContext context, ICityRepository cityRepository, ITokenRepository tokenRepository, IUserRepository userRepository)
+    public UnitOfWork(ApplicationDbContext context, ICityRepository cityRepository, ITokenRepository tokenRepository, IUserRepository userRepository)
     {
         _context = context;
         
