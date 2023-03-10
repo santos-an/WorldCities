@@ -1,8 +1,9 @@
 ﻿using Application.Interfaces.Infrastructure;
 using Application.Interfaces.Persistence;
+using Domain;
 using Domain.Entities;
-using Domain.Exceptions;
 using Infrastructure.Exceptions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Persistence.Database;
 
@@ -26,5 +27,24 @@ public class WorldCitiesDbInitializer : IDbInitializer
             city.Id = Guid.NewGuid();
 
         return result.Value.ToList();
+    }
+
+    public IReadOnlyList<IdentityRole> GetRoles()
+    {
+        return new List<IdentityRole>()
+        {
+            new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = RoleType.Normal,
+                NormalizedName = RoleType.Normal.ToUpper()
+            },
+            new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = RoleType.Admin,
+                NormalizedName = RoleType.Admin.ToUpper()
+            }
+        };
     }
 }

@@ -17,7 +17,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Persistence.Cities;
 using Persistence.Database;
-using Persistence.Token;
+using Persistence.Tokens;
+using Persistence.Users;
 
 namespace Api;
 
@@ -58,6 +59,7 @@ public static class Program
         services.AddTransient<IDbInitializer, WorldCitiesDbInitializer>();
         services.AddTransient<ICityRepository, CityRepository>();
         services.AddTransient<ITokenRepository, TokenRepository>();
+        services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IUnitOfWork, UnitOfWork>();
 
         var secret = configuration[JwtSecret];
@@ -140,12 +142,6 @@ public static class Program
 
         services.Configure<Csv>(configuration.GetSection(Csv));
 
-        // services.AddDbContext<WorldCitiesDbContext>(options =>
-        // {
-        //     var connection = configuration.GetConnectionString("DefaultConnection");
-        //     options.UseSqlServer(connection);
-        // });
-        
         services.AddDbContext<WorldCitiesDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
@@ -170,6 +166,7 @@ public static class Program
         using var scope = app.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<WorldCitiesDbContext>();
 
+        context.Database.EnsureCreated();
         context.Database.Migrate();
     }
 

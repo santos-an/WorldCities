@@ -1,5 +1,7 @@
 ﻿using Api.Auth.Requests;
 using Application.Interfaces.Infrastructure;
+using Application.UseCases.Users.Commands.Create;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,42 +11,19 @@ namespace Api.Auth;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly ITokenGenerator _tokenGenerator;
-    private readonly ITokenValidator _tokenValidator;
+    private readonly IMediator _mediator;
 
-    public AuthController(ITokenGenerator tokenGenerator, ITokenValidator tokenValidator)
-    {
-        _tokenGenerator = tokenGenerator;
-        _tokenValidator = tokenValidator;
-    }
+    public AuthController(IMediator mediator) => _mediator = mediator;
 
     [HttpPost("[action]")]
     public async Task<IActionResult> Register(UserRegistrationRequest request)
     {
-        var user = new IdentityUser { UserName = request.Username, Email = request.Email };
-        var tokenResult = await _tokenGenerator.Generate(user);
+        var command = new CreateUserCommand { Username = request.Username, Email = request.Email, Password = request.Password };
         
-        if (tokenResult.IsFailure)
-        {
-            return BadRequest(new 
-            {
-                Success = false,
-                Errors = new List<string> { "Not possible to generate a new token" }
-            });
-        }
-        
-        var token = _tokenGenerator.AccessToken;
-        var refreshToken = _tokenGenerator.RefreshToken;
-        var response = new 
-        {
-            Token = token,
-            RefreshToken = refreshToken.Value,
-            Success = true
-        };
-
-        var validationResult = await _tokenValidator.ValidateAsync(token, refreshToken.Value);
-        
-        return Ok(validationResult.Error);
+        var response = await _mediator.Send(command);
+        return response.IsFailure ? 
+            BadRequest(response.Error) : 
+            Ok(response.Value);
     }
 
     [HttpPost("[action]")]

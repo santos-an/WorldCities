@@ -2,6 +2,7 @@
 using Application.Interfaces.Persistence;
 using Domain.Authentication;
 using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,9 @@ public class WorldCitiesDbContext : IdentityDbContext
         base.OnModelCreating(modelBuilder);
         
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        
+        // populate db
         modelBuilder.Entity<City>().HasData(_initializer.GetCities());
+        modelBuilder.Entity<IdentityRole>().HasData(_initializer.GetRoles());
     }
 }
