@@ -6,13 +6,17 @@ using Application.UseCases.Cities.Queries.GetByGeoNameId;
 using Application.UseCases.Cities.Queries.GetById;
 using Application.UseCases.Cities.Queries.GetByName;
 using Application.UseCases.Cities.Queries.GetBySubCountry;
+using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Cities;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = PolicyType.Standard)]
 public class CityController : ControllerBase
 {
     private readonly IMediator _mediator;

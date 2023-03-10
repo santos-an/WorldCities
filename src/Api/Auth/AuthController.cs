@@ -37,7 +37,7 @@ public class AuthController : ControllerBase
     [HttpPost("[action]")]
     public async Task<IActionResult> UpdateToken(NewTokenRequest request)
     {
-        var command = new NewTokenCommand { AccessToken = request.AccessToken, RefreshToken = request.RefreshToken };
+        var command = new UpdateTokenCommand { AccessToken = request.AccessToken, RefreshToken = request.RefreshToken };
 
         var response = await _mediator.Send(command);
         return response.IsFailure ? BadRequest(response.Error) : Ok(response.Value);

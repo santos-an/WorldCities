@@ -29,7 +29,9 @@ public class TokenValidator : ITokenValidator
         {
             // Validation 1 - using the TokenValidationParameters
             var accessTokenValidation = _handler.ValidateToken(accessToken, _validationParameters, out var validatedToken);
-            
+            if (IsExpired(accessTokenValidation))
+                return Result.Failure("Token is expired");
+
             // Validation 2 - check if is JwtSecurityToken
             if (validatedToken is not JwtSecurityToken jwtSecurityToken)
                 return Result.Failure("Token is not a JwtSecurityToken");
@@ -88,8 +90,15 @@ public class TokenValidator : ITokenValidator
 
     public bool IsExpired(string token)
     {
-        var tokenInVerification = _handler.ValidateToken(token, _validationParameters, out _);
-        return IsExpired(tokenInVerification);
+        try
+        {
+            var tokenInVerification = _handler.ValidateToken(token, _validationParameters, out _);
+            return IsExpired(tokenInVerification);
+        }
+        catch (Exception e)
+        {
+            return true;
+        }
     }
 
     private static bool IsExpired(ClaimsPrincipal tokenInVerification)

@@ -57,7 +57,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Resul
         
         var response = new UserRegistrationResponse
         {
-            Token = accessToken,
+            AccessToken = accessToken,
             RefreshToken = refreshToken.Value,
         };
 

@@ -2,9 +2,9 @@
 
 namespace Application.UseCases.Users.Commands.UpdateToken;
 
-public class NewTokenCommandValidator : AbstractValidator<NewTokenCommand>
+public class UpdateTokenCommandValidator : AbstractValidator<UpdateTokenCommand>
 {
-    public NewTokenCommandValidator()
+    public UpdateTokenCommandValidator()
     {
         RuleFor(x => x.AccessToken).NotNull();
         RuleFor(x => x.AccessToken).NotEmpty();

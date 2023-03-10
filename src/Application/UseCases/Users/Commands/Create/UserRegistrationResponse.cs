@@ -2,6 +2,6 @@
 
 public record UserRegistrationResponse
 {
-    public string Token { get; init; }
+    public string AccessToken { get; init; }
     public string RefreshToken { get; init; }
 }

@@ -44,7 +44,7 @@ public class LoginUserCommandHandler : ICommandHandler<LoginUserCommand, Result<
         
         var response = new UserLoginResponse
         {
-            Token = accessToken,
+            AccessToken = accessToken,
             RefreshToken = refreshToken.Value,
         };
 

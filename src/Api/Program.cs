@@ -70,9 +70,9 @@ public static class Program
         var key = Encoding.ASCII.GetBytes(secret);
         var validationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = false,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ClockSkew = TimeSpan.Zero,
             IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -133,6 +133,18 @@ public static class Program
                     }
                 };
             });
+        
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(PolicyType.Standard, policy =>
+            {
+                policy.RequireRole(RoleType.Normal, RoleType.Admin);
+            });
+            options.AddPolicy(PolicyType.Administrator, policy =>
+            {
+                policy.RequireRole(RoleType.Admin);
+            });
+        });
         
         services.AddSingleton(validationParameters);
         services.Configure<JwtOtions>(configuration.GetSection(JwtOptions));
