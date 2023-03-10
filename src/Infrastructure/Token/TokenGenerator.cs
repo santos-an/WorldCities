@@ -41,7 +41,7 @@ public class TokenGenerator : ITokenGenerator
             Issuer = _jwt.Issuer,
             Audience = _jwt.Audience,
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(_jwt.TokenExpiration),
+            Expires = DateTime.UtcNow.AddMinutes(_jwt.AccessTokenExpiration),
             SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
         };
 
@@ -53,7 +53,7 @@ public class TokenGenerator : ITokenGenerator
             IsUsed = false,
             IsRevoked = false,
             Created = DateTime.Now,
-            ExpiryDate = DateTime.UtcNow.AddMonths(_jwt.RefreshTokenExpiration),
+            ExpiryDate = DateTime.UtcNow.AddHours(_jwt.RefreshTokenExpiration),
             UserId = user.Id,
             Value = RandomString(35) + Guid.NewGuid() // The actual refresh Token value
         };

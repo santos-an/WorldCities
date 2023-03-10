@@ -8,11 +8,14 @@ public class UserRepository : IUserRepository
 {
     private readonly UserManager<IdentityUser> _userManager;
 
-    public UserRepository(UserManager<IdentityUser> userManager)
-    {
-        _userManager = userManager;
-    }
+    public UserRepository(UserManager<IdentityUser> userManager) => _userManager = userManager;
 
+    public async Task<Maybe<IdentityUser>> FindByIdAsync(string id)
+    {
+        var existingUser = await _userManager.FindByIdAsync(id);
+        return Maybe.From<IdentityUser>(existingUser);
+    }
+    
     public async Task<Maybe<IdentityUser>> FindByEmailAsync(string email)
     {
         var existingUser = await _userManager.FindByEmailAsync(email);
@@ -47,5 +50,13 @@ public class UserRepository : IUserRepository
         }
 
         return result;
+    }
+
+    public async Task<Result> IsPasswordCorrectAsync(IdentityUser user, string password)
+    {
+        var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, password);
+        return isPasswordCorrect ? 
+            Result.Success() : 
+            Result.Failure("Password does not matched");
     }
 }

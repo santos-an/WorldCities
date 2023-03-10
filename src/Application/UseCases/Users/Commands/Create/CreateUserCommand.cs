@@ -55,13 +55,13 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Resul
         await _unitOfWork.Tokens.AddRefreshTokenAsync(refreshToken);
         await _unitOfWork.CommitAsync();
         
-        var registrationResponse = new UserRegistrationResponse
+        var response = new UserRegistrationResponse
         {
             Token = accessToken,
             RefreshToken = refreshToken.Value,
         };
 
-        return Result.Success(registrationResponse);
+        return Result.Success(response);
     }
 }
 

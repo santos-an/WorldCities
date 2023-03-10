@@ -28,7 +28,7 @@ public class TokenValidator : ITokenValidator
         try
         {
             // Validation 1 - using the TokenValidationParameters
-            var tokenInVerification = _handler.ValidateToken(accessToken, _validationParameters, out var validatedToken);
+            var accessTokenValidation = _handler.ValidateToken(accessToken, _validationParameters, out var validatedToken);
             
             // Validation 2 - check if is JwtSecurityToken
             if (validatedToken is not JwtSecurityToken jwtSecurityToken)
@@ -41,7 +41,7 @@ public class TokenValidator : ITokenValidator
             // Validation 4 - db check
             var refreshTokenOrNothing = await _tokenRepository.GetRefreshTokenBy(refreshToken);
             if (refreshTokenOrNothing.HasNoValue)
-                return Result.Failure("Token does not exist in the database");
+                return Result.Failure("Refrestoken does not exist in the database");
 
             var existingRefreshToken = refreshTokenOrNothing.Value;
             
@@ -54,13 +54,13 @@ public class TokenValidator : ITokenValidator
                 return Result.Failure("Token has been revoked");
 
             // Validation 7 - validated the jwt id  
-            var jtiId = GetJwtId(tokenInVerification);
+            var jtiId = GetJwtId(accessTokenValidation);
             if (!IsValidJwtId(jtiId, existingRefreshToken))
                 return Result.Failure("Jwt id Token does not matched");
             
             return Result.Success();
         }
-        catch (Exception e)
+        catch (SecurityTokenExpiredException e)
         {
             return Result.Failure(e.Message);
         }
