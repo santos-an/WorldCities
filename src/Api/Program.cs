@@ -1,4 +1,7 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using Api.Middlewares;
 using Application.Behaviours;
 using Application.Interfaces.Infrastructure;
@@ -7,8 +10,10 @@ using Domain;
 using Infrastructure;
 using Infrastructure.Behaviours;
 using Infrastructure.Csv;
+using Infrastructure.Token;
 using MediatR;
 using MediatR.Extensions.FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Persistence.Cities;
@@ -45,6 +50,10 @@ public static class Program
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
 
+        services.AddTransient<JwtSecurityTokenHandler>();
+        services.AddTransient<ITokenGenerator, TokenGenerator>();
+        services.AddTransient<ITokenValidator, TokenValidator>();
+        
         services.AddTransient<ICsvReader, CsvReader>();
         services.AddTransient<IDbInitializer, WorldCitiesDbInitializer>();
         services.AddTransient<ICityRepository, CityRepository>();
@@ -67,6 +76,59 @@ public static class Program
             ValidAudience = configuration[JwtAudience]
         };
         
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = validationParameters;
+
+                options.Events = new JwtBearerEvents()
+                {
+                    OnForbidden = context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = "application/json";
+
+                        return context.Response.WriteAsync(JsonSerializer.Serialize(new
+                        {
+                            error = "Forbidden",
+                            error_description = "You dont have permissions to access this resource x)"
+                        }));
+                    },
+
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse();
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = "application/json";
+
+                        // Ensure we always have an error and error description.
+                        if (string.IsNullOrEmpty(context.Error))
+                            context.Error = "invalid_token";
+                        if (string.IsNullOrEmpty(context.ErrorDescription))
+                            context.ErrorDescription = "This request requires a valid JWT access token to be provided";
+
+                        // Add some extra context for expired tokens.
+                        if (context.AuthenticateFailure != null && context.AuthenticateFailure.GetType() ==
+                            typeof(SecurityTokenExpiredException))
+                        {
+                            var authenticationException = context.AuthenticateFailure as SecurityTokenExpiredException;
+                            context.Response.Headers.Add("x-token-expired",
+                                authenticationException.Expires.ToString("o"));
+                            context.ErrorDescription =
+                                $"The token expired on {authenticationException.Expires.ToString("o")}";
+                        }
+
+                        return context.Response.WriteAsync(JsonSerializer.Serialize(new
+                        {
+                            error = context.Error,
+                            error_description = context.ErrorDescription
+                        }));
+                    }
+                };
+            });
         
         services.AddSingleton(validationParameters);
         services.Configure<Jwt>(configuration.GetSection(Jwt));
@@ -114,8 +176,13 @@ public static class Program
         }
 
         app.UseHttpsRedirection();
+        
+        app.UseAuthentication();
         app.UseAuthorization();
+
+        app.UseCors("Open");
         app.MapControllers();
+        
         app.UseMiddleware<ExceptionMiddleware>();
     }
 }

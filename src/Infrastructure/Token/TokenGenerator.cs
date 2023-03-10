@@ -14,15 +14,11 @@ public class TokenGenerator : ITokenGenerator
 {
     private readonly Jwt _jwt;
     private readonly JwtSecurityTokenHandler _handler;
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public TokenGenerator(IOptionsMonitor<Jwt> options, JwtSecurityTokenHandler handler, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+    public TokenGenerator(IOptionsMonitor<Jwt> options, JwtSecurityTokenHandler handler)
     {
         _jwt = options.CurrentValue;
         _handler = handler;
-        _userManager = userManager;
-        _roleManager = roleManager;
     }
 
     public async Task<Result> Generate(IdentityUser user)
@@ -60,37 +56,37 @@ public class TokenGenerator : ITokenGenerator
     {
         return new List<Claim>();
         
-        var claims = new List<Claim>()
-        {
-            new("id", user.Id),
-            new(JwtRegisteredClaimNames.Email, user.Email),
-            new(JwtRegisteredClaimNames.Sub, user.Email),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // id to be used for the refresh token
-        };
-
-        // getting the claims from DB
-        var userClaims = await _userManager.GetClaimsAsync(user);
-        claims.AddRange(userClaims);
-        
-        // get the USER_ROLES, from the DB
-        var userRoles = await _userManager.GetRolesAsync(user);
-        
-        // attach the roles from the DB
-        foreach (var userRole in userRoles)
-        {
-            var existingRole = await _roleManager.FindByNameAsync(userRole);
-            if (existingRole is null) 
-                continue;
-            
-            // add the ROLE
-            claims.Add(new Claim(ClaimTypes.Role, userRole));
-                
-            // get all claims from the ROLE
-            var existingRoleClaims = await _roleManager.GetClaimsAsync(existingRole);
-            claims.AddRange(existingRoleClaims);
-        }
-
-        return claims;
+        // var claims = new List<Claim>()
+        // {
+        //     new("id", user.Id),
+        //     new(JwtRegisteredClaimNames.Email, user.Email),
+        //     new(JwtRegisteredClaimNames.Sub, user.Email),
+        //     new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // id to be used for the refresh token
+        // };
+        //
+        // // getting the claims from DB
+        // var userClaims = await _userManager.GetClaimsAsync(user);
+        // claims.AddRange(userClaims);
+        //
+        // // get the USER_ROLES, from the DB
+        // var userRoles = await _userManager.GetRolesAsync(user);
+        //
+        // // attach the roles from the DB
+        // foreach (var userRole in userRoles)
+        // {
+        //     var existingRole = await _roleManager.FindByNameAsync(userRole);
+        //     if (existingRole is null) 
+        //         continue;
+        //     
+        //     // add the ROLE
+        //     claims.Add(new Claim(ClaimTypes.Role, userRole));
+        //         
+        //     // get all claims from the ROLE
+        //     var existingRoleClaims = await _roleManager.GetClaimsAsync(existingRole);
+        //     claims.AddRange(existingRoleClaims);
+        // }
+        //
+        // return claims;
     }
 
     private static string RandomString(int length)
