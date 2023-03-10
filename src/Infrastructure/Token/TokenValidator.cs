@@ -39,10 +39,12 @@ public class TokenValidator : ITokenValidator
                 return Result.Failure("Token algorithms does not matched");
 
             // Validation 4 - db check
-            var existingRefreshToken = await GetPersistedToken(refreshToken);
-            if (existingRefreshToken is null)
+            var refreshTokenOrNothing = await _tokenRepository.GetRefreshTokenBy(refreshToken);
+            if (refreshTokenOrNothing.HasNoValue)
                 return Result.Failure("Token does not exist in the database");
 
+            var existingRefreshToken = refreshTokenOrNothing.Value;
+            
             // Validation 5 - if was already used
             if (existingRefreshToken.IsUsed)
                 return Result.Failure("Token has been used");
@@ -73,16 +75,6 @@ public class TokenValidator : ITokenValidator
         return starterDate.AddSeconds(utcExpirityDate).ToLocalTime();
     }
 
-    private async Task<RefreshToken?> GetPersistedToken(string refreshToken)
-    {
-        await _tokenRepository.GetRefreshTokenBy(refreshToken);
-
-        return new RefreshToken()
-        {
-
-        };
-    }
-
     private static string GetJwtId(ClaimsPrincipal tokenInVerification)
     {
         var jtiClaim = tokenInVerification.Claims.FirstOrDefault(x => x.Type == Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Jti);
@@ -92,9 +84,12 @@ public class TokenValidator : ITokenValidator
         return jtiClaim.Value;
     }
 
-    private static bool IsValidJwtId(string jtiId, RefreshToken refreshToken)
+    private static bool IsValidJwtId(string jtiId, RefreshToken refreshToken) => !string.IsNullOrEmpty(jtiId) && refreshToken.JwtId == jtiId;
+
+    public bool IsExpired(string token)
     {
-        return !string.IsNullOrEmpty(jtiId) && refreshToken.JwtId == jtiId;
+        var tokenInVerification = _handler.ValidateToken(token, _validationParameters, out _);
+        return IsExpired(tokenInVerification);
     }
 
     private static bool IsExpired(ClaimsPrincipal tokenInVerification)
@@ -107,11 +102,5 @@ public class TokenValidator : ITokenValidator
         var expiryDateTime = UnixTimeSpampToDateTime(utcExpiryDate);
         
         return DateTime.Now > expiryDateTime;
-    }
-
-    public bool IsExpired(string token)
-    {
-        var tokenInVerification = _handler.ValidateToken(token, _validationParameters, out _);
-        return IsExpired(tokenInVerification);
     }
 }

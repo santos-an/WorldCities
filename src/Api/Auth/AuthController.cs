@@ -10,12 +10,12 @@ namespace Api.Auth;
 public class AuthController : ControllerBase
 {
     private readonly ITokenGenerator _tokenGenerator;
-    private readonly ITokenValidator _validator;
+    private readonly ITokenValidator _tokenValidator;
 
-    public AuthController(ITokenGenerator tokenGenerator, ITokenValidator validator)
+    public AuthController(ITokenGenerator tokenGenerator, ITokenValidator tokenValidator)
     {
         _tokenGenerator = tokenGenerator;
-        _validator = validator;
+        _tokenValidator = tokenValidator;
     }
 
     [HttpPost("[action]")]
@@ -41,8 +41,10 @@ public class AuthController : ControllerBase
             RefreshToken = refreshToken.Value,
             Success = true
         };
+
+        var validationResult = await _tokenValidator.ValidateAsync(token, refreshToken.Value);
         
-        return Ok(response);
+        return Ok(validationResult.Error);
     }
 
     [HttpPost("[action]")]

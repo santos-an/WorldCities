@@ -1,6 +1,9 @@
-﻿namespace Application.Interfaces.Persistence;
+﻿using CSharpFunctionalExtensions;
+using Domain.Authentication;
+
+namespace Application.Interfaces.Persistence;
 
 public interface ITokenRepository
 {
-    Task GetRefreshTokenBy(string token);
+    Task<Maybe<RefreshToken>> GetRefreshTokenBy(string refreshToken);
 }
