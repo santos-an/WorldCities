@@ -2,7 +2,7 @@
 
 namespace Application.UseCases.Cities.Queries.GetByGeoNameId;
 
-public class GetCityByGeoNameIdValidator : AbstractValidator<GetCityByGeoNameId>
+public class GetCityByGeoNameIdValidator : AbstractValidator<GetCityByGeoNameIdQuery>
 {
     public GetCityByGeoNameIdValidator()
     {

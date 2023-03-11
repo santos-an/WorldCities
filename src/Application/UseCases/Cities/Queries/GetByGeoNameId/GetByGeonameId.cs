@@ -5,18 +5,18 @@ using CSharpFunctionalExtensions;
 
 namespace Application.UseCases.Cities.Queries.GetByGeoNameId;
 
-public record GetCityByGeoNameId : IQuery<Result<GetCityResponse>>
+public record GetCityByGeoNameIdQuery : IQuery<Result<GetCityResponse>>
 {
     public string GeonameId { get; init; }
 }
 
-public class GetCityByGeoNameIdQueryHandler : IQueryHandler<GetCityByGeoNameId, Result<GetCityResponse>>
+public class GetCityByGeoNameIdQueryHandler : IQueryHandler<GetCityByGeoNameIdQuery, Result<GetCityResponse>>
 {
     private readonly IUnitOfWork _unitOfWork;
 
     public GetCityByGeoNameIdQueryHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<Result<GetCityResponse>> Handle(GetCityByGeoNameId request, CancellationToken cancellationToken)
+    public async Task<Result<GetCityResponse>> Handle(GetCityByGeoNameIdQuery request, CancellationToken cancellationToken)
     {
         var cityOrNothing = await _unitOfWork.Cities.GetByGeonameId(request.GeonameId);
         if (cityOrNothing.HasNoValue)

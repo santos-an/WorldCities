@@ -49,7 +49,7 @@ public class CityController : ControllerBase
     [HttpGet("[action]")]
     public async Task<IActionResult> GetByGeonameId(string geoNameId)
     {
-        var query = new GetCityByGeoNameId { GeonameId = geoNameId };
+        var query = new GetCityByGeoNameIdQuery { GeonameId = geoNameId };
         
         var response = await _mediator.Send(query);
         return response.IsFailure ? 
