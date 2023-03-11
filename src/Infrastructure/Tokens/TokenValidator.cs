@@ -3,10 +3,10 @@ using System.Security.Claims;
 using Application.Interfaces.Infrastructure;
 using Application.Interfaces.Persistence;
 using CSharpFunctionalExtensions;
-using Domain.Entities;
+using Domain.Tokens;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Infrastructure.Token;
+namespace Infrastructure.Tokens;
 
 public class TokenValidator : ITokenValidator
 {

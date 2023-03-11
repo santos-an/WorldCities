@@ -1,7 +1,7 @@
 ﻿using CsvHelper.Configuration;
-using Domain.Entities;
+using Domain.Cities;
 
-namespace Infrastructure.Csv;
+namespace Infrastructure.Cities;
 
 public class CityMapper : ClassMap<City>
 {

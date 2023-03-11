@@ -1,7 +1,7 @@
 ﻿using Application.Interfaces.Messaging;
 using Application.Interfaces.Persistence;
 using CSharpFunctionalExtensions;
-using Domain.Entities;
+using Domain.Cities;
 
 namespace Application.UseCases.Cities.Commands.Create;
 

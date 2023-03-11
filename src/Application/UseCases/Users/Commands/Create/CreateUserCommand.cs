@@ -2,7 +2,7 @@
 using Application.Interfaces.Messaging;
 using Application.Interfaces.Persistence;
 using CSharpFunctionalExtensions;
-using Domain.Entities;
+using Domain.Tokens;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application.UseCases.Users.Commands.Create;

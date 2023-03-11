@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using Domain.Entities;
+using Domain.Tokens;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 

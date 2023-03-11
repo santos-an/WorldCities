@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Domain.Cities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

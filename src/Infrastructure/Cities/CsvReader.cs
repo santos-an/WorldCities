@@ -3,10 +3,10 @@ using System.Text;
 using Application.Interfaces.Infrastructure;
 using CSharpFunctionalExtensions;
 using CsvHelper.Configuration;
-using Domain.Entities;
+using Domain.Cities;
 using Microsoft.Extensions.Options;
 
-namespace Infrastructure.Csv;
+namespace Infrastructure.Cities;
 
 public class CsvReader : ICsvReader
 {

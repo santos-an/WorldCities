@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Csv;
+﻿namespace Infrastructure.Cities;
 
 public class CsvOptions
 {

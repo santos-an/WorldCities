@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Application.Interfaces.Persistence;
-using Domain.Entities;
+using Domain.Cities;
+using Domain.Tokens;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

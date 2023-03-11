@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Domain.Cities;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application.Interfaces.Persistence;

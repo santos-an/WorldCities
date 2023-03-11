@@ -3,13 +3,12 @@ using System.Security.Claims;
 using System.Text;
 using Application.Interfaces.Infrastructure;
 using CSharpFunctionalExtensions;
-using Domain;
-using Domain.Entities;
+using Domain.Tokens;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Infrastructure.Token;
+namespace Infrastructure.Tokens;
 
 public class TokenGenerator : ITokenGenerator
 {

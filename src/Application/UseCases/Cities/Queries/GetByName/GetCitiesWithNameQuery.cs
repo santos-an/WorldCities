@@ -2,7 +2,7 @@
 using Application.Interfaces.Persistence;
 using Application.UseCases.Cities.Queries.GetById;
 using CSharpFunctionalExtensions;
-using Domain.Entities;
+using Domain.Cities;
 
 namespace Application.UseCases.Cities.Queries.GetByName;
 

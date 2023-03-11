@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces.Persistence;
 using CSharpFunctionalExtensions;
-using Domain.Entities;
+using Domain.Cities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 
