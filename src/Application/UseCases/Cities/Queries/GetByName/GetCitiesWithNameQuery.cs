@@ -41,7 +41,7 @@ public class GetCitiesWithNameQueryHandler : IQueryHandler<GetCitiesWithNameQuer
             Id = c.Id, 
             Name = c.Name, 
             Country = c.Country,
-            GeonameId = c.GeonameId,
+            GeonameId = c.GeoNameId,
             SubCountry = c.SubCountry
         };
     }

@@ -34,8 +34,8 @@ public class TokenGenerator : ITokenGenerator
     {
         var key = Encoding.ASCII.GetBytes(_jwt.Secret);
         var claims = await GetAllValidClaimsFor(user);
-
         var mySecurityKey = new SymmetricSecurityKey(key);
+        
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Issuer = _jwt.Issuer,
@@ -44,19 +44,9 @@ public class TokenGenerator : ITokenGenerator
             Expires = DateTime.UtcNow.AddMinutes(_jwt.AccessTokenExpiration),
             SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
         };
-
         SecurityToken = _handler.CreateToken(tokenDescriptor);
         AccessToken = _handler.WriteToken(SecurityToken);
-        RefreshToken = new RefreshToken
-        {
-            JwtId = SecurityToken.Id,
-            IsUsed = false,
-            IsRevoked = false,
-            Created = DateTime.Now,
-            ExpiryDate = DateTime.UtcNow.AddHours(_jwt.RefreshTokenExpiration),
-            UserId = user.Id,
-            Value = RandomString(35) + Guid.NewGuid() // The actual refresh Token value
-        };
+        RefreshToken = new RefreshToken(user.Id, SecurityToken.Id, RandomString(35) + Guid.NewGuid(), DateTime.UtcNow.AddHours(_jwt.RefreshTokenExpiration));
 
         return Result.Success();
     }

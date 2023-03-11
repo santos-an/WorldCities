@@ -13,6 +13,6 @@ public class CityConfiguration : IEntityTypeConfiguration<City>
         builder.Property(e => e.Name).IsRequired();
         builder.Property(e => e.Country).IsRequired();
         builder.Property(e => e.SubCountry).IsRequired();
-        builder.Property(e => e.GeonameId).IsRequired();
+        builder.Property(e => e.GeoNameId).IsRequired();
     }
 }

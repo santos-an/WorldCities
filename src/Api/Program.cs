@@ -79,15 +79,18 @@ public static class Program
         services.AddTransient<JwtSecurityTokenHandler>();
         services.AddTransient<ITokenGenerator, TokenGenerator>();
         services.AddTransient<ITokenValidator, TokenValidator>();
-
         services.AddSingleton<IDbInitializer, ApplicationDbInitializer>();
         services.AddTransient<ICsvReader, CsvReader>();
-        
         services.AddTransient<ICityRepository, CityRepository>();
         services.AddTransient<ITokenRepository, TokenRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IUnitOfWork, UnitOfWork>();
 
+        var csvFileName = configuration[CsvFileName];
+        if (string.IsNullOrEmpty(csvFileName))
+            throw new Exception("CsvFileName is null. Please check your app-settings.json");
+        services.Configure<CsvOptions>(configuration.GetSection(CsvOptions));
+        
         var secret = configuration[JwtSecret];
         if (string.IsNullOrEmpty(secret))
             throw new Exception("Secret is null. Please check your app-settings.json");
@@ -104,6 +107,8 @@ public static class Program
             ValidIssuer = configuration[JwtIssuer],
             ValidAudience = configuration[JwtAudience]
         };
+        services.AddSingleton(validationParameters);
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions));
         
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -158,7 +163,6 @@ public static class Program
                     }
                 };
             });
-        
         services.AddAuthorization(options =>
         {
             options.AddPolicy(PolicyType.Standard, policy =>
@@ -170,16 +174,7 @@ public static class Program
                 policy.RequireRole(RoleType.Admin);
             });
         });
-        
-        services.AddSingleton(validationParameters);
-        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions));
 
-        var csvFileName = configuration[CsvFileName];
-        if (string.IsNullOrEmpty(csvFileName))
-            throw new Exception("CsvFileName is null. Please check your app-settings.json");
-
-        services.Configure<CsvOptions>(configuration.GetSection(CsvOptions));
-        
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
@@ -208,13 +203,10 @@ public static class Program
         }
 
         app.UseHttpsRedirection();
-        
         app.UseAuthentication();
         app.UseAuthorization();
-
         app.UseCors("Open");
         app.MapControllers();
-        
         app.UseMiddleware<ExceptionMiddleware>();
         
         RunMigrations(app);

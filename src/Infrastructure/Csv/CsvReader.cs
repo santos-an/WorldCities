@@ -28,8 +28,8 @@ public class CsvReader : ICsvReader
             return Result.Failure<IEnumerable<City>>(
                 $"Not possible to read the csv file. Please make sure there is a csv at {_csvOptions.FileName}");
 
-        using var textReader = new StreamReader(fs, Encoding.UTF8);
-        using var csv = new CsvHelper.CsvReader(textReader, configuration);
+        using var reader = new StreamReader(fs, Encoding.UTF8);
+        using var csv = new CsvHelper.CsvReader(reader, configuration);
 
         return ParseToCities(csv);
     }
@@ -40,9 +40,7 @@ public class CsvReader : ICsvReader
 
         try
         {
-            var cities = csv
-                .GetRecords<City>()
-                .ToList();
+            var cities = csv.GetRecords<City>().ToList();
 
             return Result.Success<IEnumerable<City>>(cities);
         }

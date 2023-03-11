@@ -26,7 +26,7 @@ public class GetCityByGeoNameIdQueryHandler : IQueryHandler<GetCityByGeoNameId, 
         var response = new GetCityResponse
         {
             Id = city.Id, Name = city.Name, Country = city.Country, SubCountry = city.SubCountry,
-            GeonameId = city.GeonameId
+            GeonameId = city.GeoNameId
         };
 
         return Result.Success(response);

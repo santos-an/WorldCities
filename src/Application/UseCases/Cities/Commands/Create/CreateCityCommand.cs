@@ -21,13 +21,7 @@ public class CreateCityCommandHandler : ICommandHandler<CreateCityCommand, Resul
 
     public async Task<Result> Handle(CreateCityCommand request, CancellationToken cancellationToken)
     {
-        var city = new City
-        {
-            Name = request.Name,
-            Country = request.Country,
-            GeonameId = request.GeonameId,
-            SubCountry = request.SubCountry
-        };
+        var city = new City(request.Name, request.Country, request.SubCountry, request.GeonameId);
 
         await _unitOfWork.Cities.AddAsync(city);
         var result = await _unitOfWork.CommitAsync();

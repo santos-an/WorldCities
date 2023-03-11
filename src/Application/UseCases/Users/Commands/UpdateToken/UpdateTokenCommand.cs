@@ -47,8 +47,7 @@ public class UpdateTokenCommandHandler : ICommandHandler<UpdateTokenCommand, Res
             return Result.Failure<UpdateTokenResponse>("Refresh token is not present in the database.");
 
         var refreshToken = existingRefreshTokenOnDb.Value;
-        refreshToken.IsUsed = true;
-        refreshToken.IsRevoked = true;
+        refreshToken.Revoke();
         
         // get the user that is referenced on the token
         var existingUser = await _unitOfWork.Users.FindByIdAsync(refreshToken.UserId);

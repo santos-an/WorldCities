@@ -4,17 +4,30 @@ namespace Domain.Entities;
 
 public class RefreshToken
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; private set; }
+    public string UserId { get; }
+    public IdentityUser? User { get; private set; }
+    public string Value { get; }   // the actual token value   
+    public string JwtId { get; }   // the id of the jwt token, that the refresh token belongs to
+    public bool IsUsed { get; private set; }
+    public bool IsRevoked { get; private set; }
+    public DateTime Created { get; }
+    public DateTime ExpiryDate { get; }
+
+    public RefreshToken(string userId, string jwtId, string value, DateTime expiryDate)
+    {
+        UserId = userId;
+        JwtId = jwtId;
+        IsUsed = false;
+        IsRevoked = false;
+        Value = value;
+        Created = DateTime.Now;
+        ExpiryDate = expiryDate;
+    }
     
-    public string UserId { get; set; }
-    public IdentityUser? User { get; set; }
-    
-    public string Value { get; set; }   // the actual token value   
-    public string JwtId { get; set; }   // the id of the jwt token, that the refresh token belongs to
-    
-    public bool IsUsed { get; set; }
-    public bool IsRevoked { get; set; }
-    
-    public DateTime Created { get; set; }
-    public DateTime ExpiryDate { get; set; }
+    public void Revoke()
+    {
+        IsUsed = true;
+        IsRevoked = true;
+    }
 }

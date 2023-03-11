@@ -29,7 +29,7 @@ public class ApplicationDbInitializer : IDbInitializer
 
         // the csv file does not set an id for the city
         foreach (var city in result.Value) 
-            city.Id = Guid.NewGuid();
+            city.UpdateId(Guid.NewGuid());
 
         Cities = result.Value.ToList();
     }

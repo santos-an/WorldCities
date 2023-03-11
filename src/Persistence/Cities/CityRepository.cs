@@ -27,7 +27,7 @@ public class CityRepository : ICityRepository
     {
         var city = await _context
             .Cities
-            .FirstOrDefaultAsync(c => c.GeonameId == geonameId);
+            .FirstOrDefaultAsync(c => c.GeoNameId == geonameId);
 
         return Maybe.From<City>(city);
     }
