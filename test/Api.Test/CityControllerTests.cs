@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
 
-namespace Api.Tests;
+namespace Api.Test;
 
 public class CityControllerTests
 {

@@ -23,10 +23,14 @@ public class CsvReader : ICsvReader
             HasHeaderRecord = false
         };
 
+        if (!File.Exists(_csvOptions.FileName))
+            return Result.Failure<IEnumerable<City>>(
+                $"There is no csv file at at {_csvOptions.FileName}");
+
         using var fs = File.Open(_csvOptions.FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
         if (!fs.CanRead)
             return Result.Failure<IEnumerable<City>>(
-                $"Not possible to read the csv file. Please make sure there is a csv at {_csvOptions.FileName}");
+                $"Not possible to open the csv file. Please make sure there is a csv at {_csvOptions.FileName}");
 
         using var reader = new StreamReader(fs, Encoding.UTF8);
         using var csv = new CsvHelper.CsvReader(reader, configuration);

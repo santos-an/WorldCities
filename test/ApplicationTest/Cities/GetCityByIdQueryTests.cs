@@ -7,7 +7,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace ApplicationTests.Cities;
+namespace ApplicationTest.Cities;
 
 public class GetCityByIdQueryTests
 {

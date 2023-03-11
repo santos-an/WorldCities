@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Moq;
 using Xunit;
 
-namespace ApplicationTests.Users;
+namespace ApplicationTest.Users;
 
 public class LoginUserCommandTests
 {
