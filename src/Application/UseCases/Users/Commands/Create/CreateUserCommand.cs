@@ -45,7 +45,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Resul
             return Result.Failure<UserRegistrationResponse>($"Not possible to add the role {RoleType.Normal} to the user {request.Email}: {addNewRoleResult.Error}");
         
         // generate access & refresh token
-        var newTokenResult = await _tokenGenerator.Generate(user);
+        var newTokenResult = await _tokenGenerator.GenerateAsync(user);
         if (newTokenResult.IsFailure)
             return Result.Failure<UserRegistrationResponse>(newTokenResult.Error);
         

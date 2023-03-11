@@ -55,7 +55,7 @@ public class UpdateTokenCommandHandler : ICommandHandler<UpdateTokenCommand, Res
             return Result.Failure<UpdateTokenResponse>("There is no user in the database, for the given token.");
         
         // create a new access token & refresh token
-        var newTokenResult = await _tokenGenerator.Generate(existingUser.Value);
+        var newTokenResult = await _tokenGenerator.GenerateAsync(existingUser.Value);
         if (newTokenResult.IsFailure)
             return Result.Failure<UpdateTokenResponse>($"Not possible to generate a new token");
         

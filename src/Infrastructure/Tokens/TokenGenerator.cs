@@ -29,7 +29,7 @@ public class TokenGenerator : ITokenGenerator
         _roleManager = roleManager;
     }
 
-    public async Task<Result> Generate(IdentityUser user)
+    public async Task<Result> GenerateAsync(IdentityUser user)
     {
         var key = Encoding.ASCII.GetBytes(_jwt.Secret);
         var claims = await GetAllValidClaimsFor(user);

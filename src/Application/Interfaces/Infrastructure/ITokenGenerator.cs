@@ -7,7 +7,7 @@ namespace Application.Interfaces.Infrastructure;
 
 public interface ITokenGenerator
 {
-    Task<Result> Generate(IdentityUser user);
+    Task<Result> GenerateAsync(IdentityUser user);
     
     SecurityToken SecurityToken { get; }
     string AccessToken { get; }

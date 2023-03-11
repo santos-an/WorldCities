@@ -32,7 +32,7 @@ public class LoginUserCommandHandler : ICommandHandler<LoginUserCommand, Result<
         if (passwordValidation.IsFailure)
             return Result.Failure<UserLoginResponse>(passwordValidation.Error);
 
-        var newTokenResult = await _tokenGenerator.Generate(existingUser.Value);
+        var newTokenResult = await _tokenGenerator.GenerateAsync(existingUser.Value);
         if (newTokenResult.IsFailure)
             return Result.Failure<UserLoginResponse>("Not possible to generate a new token");
         
