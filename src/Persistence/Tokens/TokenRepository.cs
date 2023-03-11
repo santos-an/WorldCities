@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces.Persistence;
 using CSharpFunctionalExtensions;
-using Domain.Authentication;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 
@@ -20,8 +20,5 @@ public class TokenRepository : ITokenRepository
         return Maybe.From<RefreshToken>(existingRefreshToken);
     }
 
-    public async Task AddRefreshTokenAsync(RefreshToken refreshToken)
-    {
-        await _context.RefreshTokens.AddAsync(refreshToken);
-    }
+    public async Task AddRefreshTokenAsync(RefreshToken refreshToken) => await _context.RefreshTokens.AddAsync(refreshToken);
 }

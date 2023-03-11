@@ -1,4 +1,6 @@
-﻿namespace Domain.Exceptions;
+﻿using ApplicationException = Domain.Exceptions.ApplicationException;
+
+namespace Application.Exceptions;
 
 public class ValidationException : ApplicationException
 {

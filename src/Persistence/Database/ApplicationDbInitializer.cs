@@ -1,7 +1,6 @@
 ﻿using Application.Interfaces.Infrastructure;
 using Application.Interfaces.Persistence;
 using Bogus;
-using Domain;
 using Domain.Entities;
 using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Identity;

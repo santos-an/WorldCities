@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Domain.Authentication;
+namespace Domain.Entities;
 
 public class RefreshToken
 {

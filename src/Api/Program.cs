@@ -5,7 +5,7 @@ using Api.Middlewares;
 using Application.Behaviours;
 using Application.Interfaces.Infrastructure;
 using Application.Interfaces.Persistence;
-using Domain;
+using Domain.Entities;
 using Infrastructure.Behaviours;
 using Infrastructure.Csv;
 using Infrastructure.Token;
@@ -37,10 +37,8 @@ public static class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         ConfigureServices(builder.Services, builder.Configuration);
-
-        var app = builder.Build();
         
-        RunMigrations(app);
+        var app = builder.Build();
         Configure(app);
         
         app.Run();
@@ -174,13 +172,13 @@ public static class Program
         });
         
         services.AddSingleton(validationParameters);
-        services.Configure<JwtOtions>(configuration.GetSection(JwtOptions));
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions));
 
         var csvFileName = configuration[CsvFileName];
         if (string.IsNullOrEmpty(csvFileName))
             throw new Exception("CsvFileName is null. Please check your app-settings.json");
 
-        services.Configure<CsvOtions>(configuration.GetSection(CsvOptions));
+        services.Configure<CsvOptions>(configuration.GetSection(CsvOptions));
         
         services.AddDbContext<ApplicationDbContext>(options =>
         {
@@ -201,14 +199,6 @@ public static class Program
         services.AddFluentValidation(assemblies);
     }
 
-    private static void RunMigrations(WebApplication app)
-    {
-        using var scope = app.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        context.Database.Migrate();
-    }
-
     private static void Configure(WebApplication app)
     {
         if (app.Environment.IsDevelopment())
@@ -226,5 +216,15 @@ public static class Program
         app.MapControllers();
         
         app.UseMiddleware<ExceptionMiddleware>();
+        
+        RunMigrations(app);
+    }
+
+    private static void RunMigrations(WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        context.Database.Migrate();
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 using Application.Interfaces.Infrastructure;
 using CSharpFunctionalExtensions;
 using Domain;
-using Domain.Authentication;
+using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -13,13 +13,13 @@ namespace Infrastructure.Token;
 
 public class TokenGenerator : ITokenGenerator
 {
-    private readonly JwtOtions _jwt;
+    private readonly JwtOptions _jwt;
     private readonly JwtSecurityTokenHandler _handler;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
 
     public TokenGenerator(
-        IOptionsMonitor<JwtOtions> options,
+        IOptionsMonitor<JwtOptions> options,
         JwtSecurityTokenHandler handler,
         UserManager<IdentityUser> userManager,
         RoleManager<IdentityRole> roleManager)

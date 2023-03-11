@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using Domain.Authentication;
+using Domain.Entities;
 
 namespace Application.Interfaces.Persistence;
 

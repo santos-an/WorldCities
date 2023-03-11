@@ -3,7 +3,7 @@ using System.Security.Claims;
 using Application.Interfaces.Infrastructure;
 using Application.Interfaces.Persistence;
 using CSharpFunctionalExtensions;
-using Domain.Authentication;
+using Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Token;
@@ -80,10 +80,9 @@ public class TokenValidator : ITokenValidator
     private static string GetJwtId(ClaimsPrincipal tokenInVerification)
     {
         var jtiClaim = tokenInVerification.Claims.FirstOrDefault(x => x.Type == Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Jti);
-        if (jtiClaim == null)
-            return string.Empty;
-
-        return jtiClaim.Value;
+        return jtiClaim == null ? 
+            string.Empty : 
+            jtiClaim.Value;
     }
 
     private static bool IsValidJwtId(string jtiId, RefreshToken refreshToken) => !string.IsNullOrEmpty(jtiId) && refreshToken.JwtId == jtiId;

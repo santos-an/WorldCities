@@ -7,6 +7,7 @@ using Application.UseCases.Cities.Queries.GetById;
 using Application.UseCases.Cities.Queries.GetByName;
 using Application.UseCases.Cities.Queries.GetBySubCountry;
 using Domain;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

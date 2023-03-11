@@ -1,6 +1,6 @@
-﻿namespace Domain;
+﻿namespace Infrastructure.Token;
 
-public class JwtOtions
+public class JwtOptions
 {
     public string Secret { get; init; }
     public string Issuer { get; init; }

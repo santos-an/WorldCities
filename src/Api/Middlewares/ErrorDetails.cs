@@ -1,4 +1,4 @@
-﻿namespace Domain;
+﻿namespace Api.Middlewares;
 
 public class ErrorDetails
 {

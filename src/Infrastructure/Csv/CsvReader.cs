@@ -10,9 +10,9 @@ namespace Infrastructure.Csv;
 
 public class CsvReader : ICsvReader
 {
-    private readonly Domain.CsvOtions _csvOtions;
+    private readonly CsvOptions _csvOptions;
 
-    public CsvReader(IOptionsMonitor<Domain.CsvOtions> csvOptions) => _csvOtions = csvOptions.CurrentValue;
+    public CsvReader(IOptionsMonitor<CsvOptions> csvOptions) => _csvOptions = csvOptions.CurrentValue;
 
     public Result<IEnumerable<City>> Read()
     {
@@ -23,10 +23,10 @@ public class CsvReader : ICsvReader
             HasHeaderRecord = false
         };
 
-        using var fs = File.Open(_csvOtions.FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+        using var fs = File.Open(_csvOptions.FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
         if (!fs.CanRead)
             return Result.Failure<IEnumerable<City>>(
-                $"Not possible to read the csv file. Please make sure there is a csv at {_csvOtions.FileName}");
+                $"Not possible to read the csv file. Please make sure there is a csv at {_csvOptions.FileName}");
 
         using var textReader = new StreamReader(fs, Encoding.UTF8);
         using var csv = new CsvHelper.CsvReader(textReader, configuration);
