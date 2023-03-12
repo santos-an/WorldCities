@@ -83,4 +83,4 @@ This demo application uses the following technologies:
  - SQL Server 2022
  - Bogus 34.0
  - IdentityModel.Tokens.Jwt 6.25
-
+ - Fluent Validation 11.2
