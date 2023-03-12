@@ -15,6 +15,7 @@ public class ApplicationDbContext : IdentityDbContext
     public virtual DbSet<RefreshToken> RefreshTokens { set; get; }
     public virtual DbSet<City> Cities { set; get; }
 
+    public ApplicationDbContext() { }
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IDbInitializer initializer) : base(options) => _initializer = initializer;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
